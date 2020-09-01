@@ -8,7 +8,6 @@ Created on Mon Aug 31 09:18:19 2020
 
 #%% Libraries
 import numpy as np
-import matplotlib.pyplot as plt
 import pandas as pd
 
 #%% Get Data
@@ -42,7 +41,6 @@ print(test_x.isnull().sum())
 
 '''
 #%% Converting data types
-
 # Separating the target variable
 train_y = train_x['target']
 train_x = train_x.iloc[:, :-1]
@@ -57,6 +55,10 @@ dat_cols = dat.columns
 for col in dat.columns:
     if col not in ['id', 'day', 'month']:
         dat[col] = dat[col].astype('category')
+        
+#%% Saving the processed data for future use
+dat.to_pickle('./data/dat_01.pkl')
+train_y.to_pickle('./data/train_y_01.pkl')
         
 #%% Visualising the category value distribution in columns for train and test dataset side by side
 len_f = len(train_x)
@@ -90,7 +92,7 @@ for col in bin_cols:
     print('')
 
 '''
-1. A naive classification using bin_0 would likely give train set prediction accuracy of ~64.5% and likely forms the baseline threshold for any model development
+1. A naive classification using bin_0 would likely give train set prediction accuracy of ~64% and likely forms the baseline threshold for any model development
 
 '''
 
