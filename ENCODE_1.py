@@ -75,6 +75,9 @@ dat.loc[:, cols] = dat.loc[:, cols].apply(le.fit_transform)
 #%% "Labeling" turns all data types into 'int64'. We reset it to 'category'
 dat = dat.astype('category')
 
+# Saving the "labeled" train and test datasets for future use
+dat.iloc[:train_idx, :].to_pickle('./data/train_x_lbl_1.pkl')
+dat.iloc[train_idx:, :].to_pickle('./data/test_x_lbl_1.pkl')
 
 #%% One-hot-encoding identified columns
 ohe_cols = ['bin_0', 'bin_1', 'bin_2', 'bin_3', 'bin_4', 'nom_0', 'nom_1', 'nom_2', 'nom_3', 'nom_4', 'ord_0', 'ord_1', 'ord_2', 'ord_3', 'day', 'month']
@@ -92,5 +95,5 @@ dat_bie_enc = bie.fit_transform(dat[bie_cols])
 dat = pd.concat([dat_ohe_enc, dat_bie_enc], axis = 1)
 
 #%% Saving the encoded train and test datsets separately
-dat.iloc[:train_idx, :].to_pickle('./data/train_x.pkl')
-dat.iloc[train_idx:, :].to_pickle('./data/test_x.pkl')
+dat.iloc[:train_idx, :].to_pickle('./data/train_x_enc_1.pkl')
+dat.iloc[train_idx:, :].to_pickle('./data/test_x_enc_1.pkl')
