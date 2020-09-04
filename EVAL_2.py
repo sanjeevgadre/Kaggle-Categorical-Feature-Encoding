@@ -13,16 +13,16 @@ from sklearn.model_selection import cross_val_score
 from sklearn.linear_model import LogisticRegression
 
 #%% Get Encoded Train data
-train_x = pd.read_pickle('./data/train_x_enc_1.pkl')
+train_x = pd.read_pickle('./data/train_x_enc_2.pkl')
 train_y = pd.read_pickle('./data/train_y.pkl')
 
 #%% Evaluate the average cross validated score
 est = LogisticRegression(random_state = 1970, solver = 'saga')
 
 cv_scores = cross_val_score(estimator = est, X = train_x, y = train_y, scoring = 'roc_auc', 
-                            cv = 10, n_jobs = -1, pre_dispatch = '1.5*n_jobs', 
+                            cv = 5, n_jobs = -1, pre_dispatch = '1.5*n_jobs', 
                             error_score = 'raise')
 
 print('The average cross validated area under the ROC curve %.4f' % np.mean(cv_scores))
 
-# The average cross validated area under the ROC curve 0.7356
+# The average cross validated area under the ROC curve 0.7371. The score has improved from the first pass.

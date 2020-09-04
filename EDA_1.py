@@ -49,6 +49,7 @@ print(train_x.isnull().sum())
 10. No missing or null values
 
 '''
+
 #%% Test Data Description
 print(test_x.describe(include = 'all').T)
 input('Press <Enter> to continue')

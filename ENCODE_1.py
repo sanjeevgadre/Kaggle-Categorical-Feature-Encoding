@@ -21,7 +21,7 @@ train_idx = 300000      # Number of training samples
 1. One-hot-encoding is the preferred encoding strategy especially if we plan to develop linear predictive models. For the past pass we assume that we are indeed developing linear predictive models.
 2. One-hot-encoding all columns can really blow up the dimension of the dataset and hence we choose to one hot encode only those columns with cardinality < 16. These columns are: bin_0, bin_1, bin_2, bin_3, bin_4, nom_0, nom_1, nom_2, nom_3, nom_4, ord_0, ord_1, ord_2, ord_3, day and month. This will increase the total column count by 67 i.e. to 90 
 3. For the remaining columns we use the "Binary Encoding" strategy. This will increase the total column count by another 61 i.e. to 158.
-4. Given that the train dataset has 300,000 rows, a total column count of 151 should not pose much difficulty in fitting a linear model. However, it must be highlighted that the resulting feature matrix (after encoding) will be very sparse.
+4. Given that the train dataset has 300,000 rows, a total column count of 158 should not pose much difficulty in fitting a linear model. However, it must be highlighted that the resulting feature matrix (after encoding) will be very sparse.
 
 5. Before implementing the encoding strategy outlined above, it will be first necessary to encode all category labels to numeric value. To that end we use the LabelEncoder() method from sklearn.preprocessing
 
