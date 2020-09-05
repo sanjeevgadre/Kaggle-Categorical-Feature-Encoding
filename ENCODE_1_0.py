@@ -99,5 +99,5 @@ dat = ohe_enc.fit_transform(dat)
 dat = bin_enc.fit_transform(dat)
 
 #%% Saving the encoded train and test datsets separately
-dat.iloc[:train_idx, :].to_pickle('./data/train_x_enc_1.pkl')
-dat.iloc[train_idx:, :].to_pickle('./data/test_x_enc_1.pkl')
+dat.iloc[:train_idx, :].to_pickle('./data/train_x_enc_1_0.pkl')
+dat.iloc[train_idx:, :].to_pickle('./data/test_x_enc_1_0.pkl')
