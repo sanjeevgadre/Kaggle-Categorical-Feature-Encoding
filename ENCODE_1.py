@@ -28,10 +28,10 @@ train_idx = 300000      # Number of training samples
 '''
 
 #%% "Labeling" Binary features
-le = LabelEncoder()
+le_enc = LabelEncoder()
 
 cols = [c for c in dat.columns if 'bin' in c]
-dat.loc[:, cols] = dat.loc[:, cols].apply(le.fit_transform)
+dat.loc[:, cols] = dat.loc[:, cols].apply(le_enc.fit_transform)
 
 #%% "Labeling" Ordinal features - I
 cols = [c for c in dat.columns if 'ord' in c]
@@ -59,17 +59,17 @@ FOR NOW WE ARE ASSUMING THAT THE MAGNITUDE BETWEEN SUCCESSIVE INTERVALS OF THE O
 #%% "Labeling" Ordinal features - II
 for col in cols:
     if col == 'ord_1':
-        le.fit(['Novice', 'Contributor', 'Expert', 'Master', 'Grandmaster'])
-        dat['ord_1'] = le.transform(dat['ord_1'])
+        le_enc.fit(['Novice', 'Contributor', 'Expert', 'Master', 'Grandmaster'])
+        dat['ord_1'] = le_enc.transform(dat['ord_1'])
     elif col == 'ord_2':
-        le.fit(['Freezing', 'Cold', 'Warm', 'Hot', 'Boiling Hot', 'Lava Hot'])
-        dat['ord_2'] = le.transform(dat['ord_2'])
+        le_enc.fit(['Freezing', 'Cold', 'Warm', 'Hot', 'Boiling Hot', 'Lava Hot'])
+        dat['ord_2'] = le_enc.transform(dat['ord_2'])
     else:
-        dat[col] = le.fit_transform(dat[col])
+        dat[col] = le_enc.fit_transform(dat[col])
         
 #%% "Labeling" Nominal features
 cols = [x for x in dat.columns if 'bin' not in x and 'ord' not in x]
-dat.loc[:, cols] = dat.loc[:, cols].apply(le.fit_transform)
+dat.loc[:, cols] = dat.loc[:, cols].apply(le_enc.fit_transform)
 
 
 #%% "Labeling" turns all data types into 'int64'. We reset it to 'category'
@@ -79,20 +79,24 @@ dat = dat.astype('category')
 dat.iloc[:train_idx, :].to_pickle('./data/train_x_lbl_1.pkl')
 dat.iloc[train_idx:, :].to_pickle('./data/test_x_lbl_1.pkl')
 
-#%% One-hot-encoding identified columns
-ohe_cols = ['bin_0', 'bin_1', 'bin_2', 'bin_3', 'bin_4', 'nom_0', 'nom_1', 'nom_2', 'nom_3', 'nom_4', 'ord_0', 'ord_1', 'ord_2', 'ord_3', 'day', 'month']
+#%% Category Encoding
+'''
+1. category_encoders work differently than sklearn_encoders. category_encoders need to work on the entire dataframe at one go whereas the sklearn_encoders can work on a column at a time.
+2. To allow for specific columns to be encoded, category_encoders allow for a parameter called "col" in the respective encoder method.
 
-ohe = ce.OneHotEncoder(cols = ohe_cols)
-dat_ohe_enc = ohe.fit_transform(dat[ohe_cols])
+'''
+# Identifying columns according to encoding to apply
+ohe_cols = ['bin_0', 'bin_1', 'bin_2', 'bin_3', 'bin_4', 'nom_0', 'nom_1', 'nom_2', 'nom_3',
+            'nom_4', 'ord_0', 'ord_1', 'ord_2', 'ord_3', 'day', 'month']
+bin_cols = [x for x in dat.columns if x not in ohe_cols]
 
-#%% Binary-encoding identified columns
-bie_cols = [x for x in dat.columns if x not in ohe_cols]
+# Setting up the encoders
+ohe_enc = ce.OneHotEncoder(cols = ohe_cols)
+bin_enc = ce.BinaryEncoder(cols = bin_cols)
 
-bie = ce.BinaryEncoder(cols = bie_cols)
-dat_bie_enc = bie.fit_transform(dat[bie_cols])
-
-#%% Combining the encoded columns
-dat = pd.concat([dat_ohe_enc, dat_bie_enc], axis = 1)
+# Applying the encoding
+dat = ohe_enc.fit_transform(dat)
+dat = bin_enc.fit_transform(dat)
 
 #%% Saving the encoded train and test datsets separately
 dat.iloc[:train_idx, :].to_pickle('./data/train_x_enc_1.pkl')
