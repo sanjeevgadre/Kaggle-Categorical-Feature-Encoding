@@ -80,9 +80,8 @@ preds.to_csv('./data/preds_2_1_1.csv', index = False, index_label = False)
 train_x = pd.read_pickle('./data/train_x_enc_3_0_1.pkl')
 test_x = pd.read_pickle('./data/test_x_enc_3_0_1.pkl')
 
-ohe_cols = ['bin_0', 'bin_1', 'bin_2', 'bin_3', 'bin_4', 'nom_0', 'nom_1', 'nom_2', 'nom_3',
-            'nom_4', 'day', 'month']
-ord_cols = [x for x in train_x.columns if x not in ohe_cols]
+ord_cols = ['nom_5', 'nom_6', 'nom_7', 'nom_8', 'nom_9', 'ord_0', 'ord_1', 
+            'ord_2', 'ord_3', 'ord_4', 'ord_5']
 te_enc = ce.TargetEncoder(cols = ord_cols)
 train_enc = te_enc.fit_transform(train_x, train_y)
 test_enc = te_enc.transform(test_x)
@@ -137,5 +136,23 @@ preds = pd.DataFrame(data = {'id': np.arange(300000, 300000+len(test_x)),
                              'target': preds[:, 1]}, columns = ['id', 'target'])
 
 preds.to_csv('./data/preds_3_2_1.csv', index = False, index_label = False)
+
+# The test set area under the ROC curve 0.79237
+
+#%% 4.0
+import lightgbm as lgb
+
+# Get Label Train data
+train_x = pd.read_pickle('./data/train_x_lbl_1.pkl')
+test_x = pd.read_pickle('./data/test_x_lbl_1.pkl')
+
+est = lgb.LGBMClassifier(random_state = 1970)
+
+model = est.fit(train_x, train_y, categorical_feature = 'auto')
+preds = model.predict_proba(test_x)
+preds = pd.DataFrame(data = {'id': np.arange(300000, 300000+len(test_x)), 
+                             'target': preds[:, 1]}, columns = ['id', 'target'])
+
+preds.to_csv('./data/preds_4_0.csv', index = False, index_label = False)
 
 # The test set area under the ROC curve 0.79237

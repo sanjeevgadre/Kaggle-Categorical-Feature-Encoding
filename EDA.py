@@ -119,6 +119,14 @@ for col in bin_cols:
 1. A naive classification using bin_0 would likely give train set prediction accuracy of ~64%.
 '''
 
+#%% Visualizing correlation between nominam features and target value in train dataset
+nom_cols = [x for x in dat.columns if 'nom' in x]
+for col in nom_cols:
+    foo = pd.crosstab(dat.loc[dat.index[:train_idx], col], train_y, normalize = 'columns')
+    print('For feature: %s' % col)
+    print(foo)
+    input('Press <Enter> to continue')
+
 #%% Saving the processed combined data for future use
 dat.to_pickle('./data/dat.pkl')
 train_y.to_pickle('./data/train_y.pkl')
