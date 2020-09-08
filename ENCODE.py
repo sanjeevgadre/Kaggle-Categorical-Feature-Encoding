@@ -67,10 +67,10 @@ dat.loc[:, cols] = dat.loc[:, cols].apply(le_enc.fit_transform)
 dat = dat.astype('category')
 
 # Saving the "labeled" train and test datasets for future use
-dat.iloc[:train_idx, :].to_pickle('./data/train_x_lbl_1.pkl')
-dat.iloc[train_idx:, :].to_pickle('./data/test_x_lbl_1.pkl')
+dat.iloc[:train_idx, :].to_pickle('./data/train_x_lbl.pkl')
+dat.iloc[train_idx:, :].to_pickle('./data/test_x_lbl.pkl')
 
-#%% 1.0 One-hot-encode Binary and low cardinality Ordinal & Nominal features | Binary encode high cardinality Ordinal & Nominal features
+#%% 1. One-hot-encode Binary and low cardinality Ordinal & Nominal features | Binary encode high cardinality Ordinal & Nominal features
 '''
 1. One-hot-encoding is the preferred encoding strategy especially if we plan to develop linear predictive models.
 2. One-hot-encoding all columns can really blow up the dimension of the dataset and hence we choose to one hot encode only those columns with cardinality < 16. These columns are: bin_0, bin_1, bin_2, bin_3, bin_4, nom_0, nom_1, nom_2, nom_3, nom_4, ord_0, ord_1, ord_2, ord_3, day and month. This will increase the total column count by 67 i.e. to 90 
@@ -94,33 +94,12 @@ dat = ohe_enc.fit_transform(dat)
 dat = bin_enc.fit_transform(dat)
 
 # Saving the encoded train and test datsets separately
-dat.iloc[:train_idx, :].to_pickle('./data/train_x_enc_1_0.pkl')
-dat.iloc[train_idx:, :].to_pickle('./data/test_x_enc_1_0.pkl')
+dat.iloc[:train_idx, :].to_pickle('./data/train_x_enc_1.pkl')
+dat.iloc[train_idx:, :].to_pickle('./data/test_x_enc_1.pkl')
 
-#%% 2.0 One-hot-encode Binary and low cardinality Nominal features | Binary encode high cardinality Nominal features | Ordinal Encode Ordinal Features (done during Eval)
-dat = pd.concat([pd.read_pickle('./data/train_x_lbl_1.pkl'), 
-                 pd.read_pickle('./data/test_x_lbl_1.pkl')], axis = 0)
-
-# Identifying columns according to encoding to apply
-ohe_cols = ['bin_0', 'bin_1', 'bin_2', 'bin_3', 'bin_4', 'nom_0', 'nom_1', 'nom_2', 'nom_3',
-            'nom_4', 'day', 'month']
-bin_cols = [x for x in dat.columns if x not in ohe_cols and 'ord' not in x]
-
-# Setting up the encoders
-ohe_enc = ce.OneHotEncoder(cols = ohe_cols)
-bin_enc = ce.BinaryEncoder(cols = bin_cols)
-
-# Applying the encoding
-dat = ohe_enc.fit_transform(dat)
-dat = bin_enc.fit_transform(dat)
-
-# Saving the encoded train and test datsets separately
-dat.iloc[:train_idx, :].to_pickle('./data/train_x_enc_2_0.pkl')
-dat.iloc[train_idx:, :].to_pickle('./data/test_x_enc_2_0.pkl')
-
-#%% 2.1.1 One-hot-encode Binary and low cardinality Nominal features | Binary encode high cardinality Nominal features | Target Encode Ordinal Features (done during Eval)
-dat = pd.concat([pd.read_pickle('./data/train_x_lbl_1.pkl'), 
-                 pd.read_pickle('./data/test_x_lbl_1.pkl')], axis = 0)
+#%% 2. One-hot-encode Binary and low cardinality Nominal features | Binary encode high cardinality Nominal features | Ordinal encode Ordinal features (done during Eval)
+dat = pd.concat([pd.read_pickle('./data/train_x_lbl.pkl'), 
+                 pd.read_pickle('./data/test_x_lbl.pkl')], axis = 0)
 
 # Identifying columns according to encoding to apply
 ohe_cols = ['bin_0', 'bin_1', 'bin_2', 'bin_3', 'bin_4', 'nom_0', 'nom_1', 'nom_2', 'nom_3',
@@ -136,12 +115,33 @@ dat = ohe_enc.fit_transform(dat)
 dat = bin_enc.fit_transform(dat)
 
 # Saving the encoded train and test datsets separately
-dat[:train_idx].to_pickle('./data/train_x_enc_2_1_1.pkl')
-dat[train_idx:].to_pickle('./data/test_x_enc_2_1_1.pkl')
+dat.iloc[:train_idx, :].to_pickle('./data/train_x_enc_2.pkl')
+dat.iloc[train_idx:, :].to_pickle('./data/test_x_enc_2.pkl')
 
-#%% 3.0.1 One-hot-encode Binary and low cardinality Nominal features | Target Encode Ordinal and high cardinality Nominal Features (done during Eval)
-dat = pd.concat([pd.read_pickle('./data/train_x_lbl_1.pkl'), 
-                 pd.read_pickle('./data/test_x_lbl_1.pkl')], axis = 0)
+#%% 3. One-hot-encode Binary and low cardinality Nominal features | Binary encode high cardinality Nominal features | Target encode Ordinal features (done during Eval)
+dat = pd.concat([pd.read_pickle('./data/train_x_lbl.pkl'), 
+                 pd.read_pickle('./data/test_x_lbl.pkl')], axis = 0)
+
+# Identifying columns according to encoding to apply
+ohe_cols = ['bin_0', 'bin_1', 'bin_2', 'bin_3', 'bin_4', 'nom_0', 'nom_1', 'nom_2', 'nom_3',
+            'nom_4', 'day', 'month']
+bin_cols = [x for x in dat.columns if x not in ohe_cols and 'ord' not in x]
+
+# Setting up the encoders
+ohe_enc = ce.OneHotEncoder(cols = ohe_cols)
+bin_enc = ce.BinaryEncoder(cols = bin_cols)
+
+# Applying the encoding
+dat = ohe_enc.fit_transform(dat)
+dat = bin_enc.fit_transform(dat)
+
+# Saving the encoded train and test datsets separately
+dat[:train_idx].to_pickle('./data/train_x_enc_3.pkl')
+dat[train_idx:].to_pickle('./data/test_x_enc_3.pkl')
+
+#%% 4. One-hot-encode Binary and low cardinality Nominal features | Target Encode Ordinal and high cardinality Nominal features (done during Eval)
+dat = pd.concat([pd.read_pickle('./data/train_x_lbl.pkl'), 
+                 pd.read_pickle('./data/test_x_lbl.pkl')], axis = 0)
 
 # Identifying columns according to encoding to apply
 ohe_cols = ['bin_0', 'bin_1', 'bin_2', 'bin_3', 'bin_4', 'nom_0', 'nom_1', 'nom_2', 'nom_3',
@@ -154,12 +154,12 @@ ohe_enc = ce.OneHotEncoder(cols = ohe_cols)
 dat = ohe_enc.fit_transform(dat)
 
 # Saving the encoded train and test datsets separately
-dat[:train_idx].to_pickle('./data/train_x_enc_3_0_1.pkl')
-dat[train_idx:].to_pickle('./data/test_x_enc_3_0_1.pkl')
+dat[:train_idx].to_pickle('./data/train_x_enc_4.pkl')
+dat[train_idx:].to_pickle('./data/test_x_enc_4.pkl')
 
-#%% 3.1.1 One-hot-encode Binary features | Target encode all Ordinal and Nominal features (done during Eval)
-dat = pd.concat([pd.read_pickle('./data/train_x_lbl_1.pkl'), 
-                 pd.read_pickle('./data/test_x_lbl_1.pkl')], axis = 0)
+#%% 5. One-hot-encode Binary features | Target encode all Ordinal and Nominal features (done during Eval)
+dat = pd.concat([pd.read_pickle('./data/train_x_lbl.pkl'), 
+                 pd.read_pickle('./data/test_x_lbl.pkl')], axis = 0)
 
 # Identifying columns according to encoding to apply
 ohe_cols = [x for x in dat.columns if 'bin' in x]
@@ -171,5 +171,5 @@ ohe_enc = ce.OneHotEncoder(cols = ohe_cols)
 dat = ohe_enc.fit_transform(dat)
 
 # Saving the encoded train and test datsets separately
-dat[:train_idx].to_pickle('./data/train_x_enc_3_1_1.pkl')
-dat[train_idx:].to_pickle('./data/test_x_enc_3_1_1.pkl')
+dat[:train_idx].to_pickle('./data/train_x_enc_5.pkl')
+dat[train_idx:].to_pickle('./data/test_x_enc_5.pkl')
