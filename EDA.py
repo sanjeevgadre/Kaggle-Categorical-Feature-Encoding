@@ -9,6 +9,7 @@ Created on Mon Aug 31 09:18:19 2020
 #%% Libraries
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 
 #%% Get Data
 train_x = pd.read_csv('./data/train.csv')
@@ -105,7 +106,7 @@ for col in dat.columns:
 3. We tentatively conclude that the train and test datasets are derived from the same population.
 
 '''
-#%% Visualizing correlation between binary features and target value in train dataset
+#%% Visualizing distribution each binary feature's categories over target value in train dataset
 bin_cols = [x for x in dat.columns if 'bin' in x]
 for col in bin_cols:
     foo = pd.crosstab(train_y, dat.loc[dat.index[:train_idx], col], normalize = True,
@@ -119,12 +120,20 @@ for col in bin_cols:
 1. A naive classification using bin_0 would likely give train set prediction accuracy of ~64%.
 '''
 
-#%% Visualizing correlation between nominam features and target value in train dataset
+#%% Visualizing distribution of each nominal feature's categories over target value in train dataset
 nom_cols = [x for x in dat.columns if 'nom' in x]
 for col in nom_cols:
     foo = pd.crosstab(dat.loc[dat.index[:train_idx], col], train_y, normalize = 'columns')
     print('For feature: %s' % col)
-    print(foo)
+    print(foo.iloc[:, 1].sort_values())
+    input('Press <Enter> to continue')
+    
+#%% Visualizing distribution of each ordinal feature's categories over target value in train dataset
+ord_cols = [x for x in dat.columns if 'ord' in x]
+for col in ord_cols:
+    foo = pd.crosstab(dat.loc[dat.index[:train_idx], col], train_y, normalize = 'columns')
+    print('For feature: %s' % col)
+    print(foo.iloc[:, 1].sort_values())
     input('Press <Enter> to continue')
 
 #%% Saving the processed combined data for future use
